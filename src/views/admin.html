@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Rekap Nilai Siswa — Game Relasi & Fungsi (Thesis S2)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #FDFBF7;
+      --card-bg: #FFFFFF;
+      --border-color: #2D241E;
+      --text-main: #2D241E;
+      --text-muted: #64748B;
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --accent: #F59E0B;
+      --accent-light: #FEF3C7;
+      --success: #10B981;
+      --success-light: #D1FAE5;
+      --danger: #EF4444;
+      --danger-light: #FEE2E2;
+      --shadow-solid: 3px 4px 0px #2D241E;
+      --shadow-solid-sm: 2px 2px 0px #2D241E;
+      --shadow-solid-lg: 5px 6px 0px #2D241E;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, .heading-font {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    .header {
+      background: var(--card-bg);
+      border: 3px solid var(--border-color);
+      border-radius: 24px;
+      padding: 24px 32px;
+      box-shadow: var(--shadow-solid);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-title h1 {
+      font-size: 26px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-title p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-export {
+      background: #10B981;
+      color: white;
+      text-decoration: none;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 12px 22px;
+      border-radius: 16px;
+      border: 2.5px solid var(--border-color);
+      box-shadow: var(--shadow-solid-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-export:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 3px 5px 0px #2D241E;
+    }
+
+    .btn-action {
+      background: #F1F5F9;
+      color: var(--text-main);
+      border: 2px solid var(--border-color);
+      padding: 10px 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 2px 2px 0px #2D241E;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+
+    .btn-action:hover {
+      background: #E2E8F0;
+      transform: translateY(-1px);
+    }
+
+    .btn-logout {
+      background: #FEE2E2;
+      color: #991B1B;
+      border-color: var(--border-color);
+    }
+    .btn-logout:hover {
+      background: #FECACA;
+    }
+
+    .btn-del-row {
+      background: #FEE2E2;
+      color: #DC2626;
+      border: 1.5px solid #EF4444;
+      padding: 5px 11px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-del-row:hover {
+      background: #DC2626;
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 1px 2px 0px var(--border-color);
+    }
+
+    .btn-reset-all {
+      background: #FFF1F2;
+      color: #E11D48;
+      border: 2px solid var(--border-color);
+      padding: 10px 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 2px 2px 0px var(--border-color);
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+    .btn-reset-all:hover {
+      background: #FFE4E6;
+      transform: translateY(-1px);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 2.5px solid var(--border-color);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow-solid);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      margin-top: 6px;
+      color: var(--text-main);
+    }
+
+    /* Table Section */
+    .card-table {
+      background: var(--card-bg);
+      border: 3px solid var(--border-color);
+      border-radius: 24px;
+      box-shadow: var(--shadow-solid);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table-toolbar {
+      padding: 20px 24px;
+      border-bottom: 2px solid #E2E8F0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .search-input {
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 2px solid var(--border-color);
+      font-family: inherit;
+      font-size: 14px;
+      width: 320px;
+      max-width: 100%;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      max-height: 650px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    thead {
+      background: #F8FAFC;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    th {
+      padding: 14px 16px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      color: #334155;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #E2E8F0;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    tr:hover td {
+      background-color: #F8FAFC;
+    }
+
+    .user-pill {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-pill .name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+
+    .user-pill .uname {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Subbab badges */
+    .subbab-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .badge-stage {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      background: #F1F5F9;
+      color: #475569;
+      border: 1px solid #CBD5E1;
+      width: fit-content;
+    }
+
+    .badge-quest {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 800;
+      font-family: 'Outfit', sans-serif;
+      width: fit-content;
+    }
+
+    .badge-quest.scored {
+      background: #DEF7EC;
+      color: #03543F;
+      border: 1px solid #31C48D;
+    }
+
+    .badge-quest.empty {
+      color: #94A3B8;
+      font-size: 11px;
+      font-style: italic;
+    }
+
+    .badge-score-total {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .badge-endless {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #D97706;
+    }
+
+    .empty-state {
+      padding: 48px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    /* ── Login Modal Overlay ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(45, 36, 30, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .login-box {
+      background: var(--card-bg);
+      border: 3.5px solid var(--border-color);
+      border-radius: 28px;
+      padding: 36px 32px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: var(--shadow-solid-lg);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      transform: scale(0.95);
+      transition: transform 0.25s ease;
+    }
+
+    .modal-overlay.active .login-box {
+      transform: scale(1);
+    }
+
+    .login-icon {
+      font-size: 48px;
+      line-height: 1;
+    }
+
+    .login-box h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .login-box p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2.5px solid var(--border-color);
+      border-radius: 16px;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      box-shadow: 2px 2px 0px var(--border-color);
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .login-input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-login {
+      background: var(--primary);
+      color: white;
+      border: 2.5px solid var(--border-color);
+      border-radius: 16px;
+      padding: 14px 24px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: var(--shadow-solid-sm);
+      transition: all 0.15s ease;
+    }
+
+    .btn-login:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 3px 4px 0px var(--border-color);
+    }
+
+    .login-error {
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1.5px solid var(--danger);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Modal (Active by default until authenticated) -->
+  <div id="loginModal" class="modal-overlay">
+    <div class="login-box">
+      <div class="login-icon">🔐</div>
+      <div>
+        <h2>Akses Peneliti (Admin)</h2>
+        <p>Halaman ini dilindungi. Masukkan password admin untuk melihat kemajuan dan nilai ujian siswa.</p>
+      </div>
+
+      <div id="loginError" class="login-error">Password salah! Silakan coba lagi.</div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)" style="display: flex; flex-direction: column; gap: 14px;">
+        <input
+          type="password"
+          id="adminPasswordInput"
+          class="login-input"
+          placeholder="Masukkan password admin..."
+          required
+          autocomplete="current-password"
+        />
+        <button type="submit" class="btn-login">
+          Buka Dashboard 🚀
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard Container -->
+  <div class="container" id="dashboardContainer">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title">
+        <h1>🔍 Detektif Relo & Snowy — Data Tesis S2</h1>
+        <p>Dashboard Rekapitulasi Kemajuan Belajar & Nilai Ujian Siswa (Game Relasi & Fungsi)</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-action" onclick="loadAllData()">🔄 Refresh</button>
+        <button class="btn-export" onclick="downloadCsv()">
+          📥 Download Rekap Excel (.CSV)
+        </button>
+        <button class="btn-reset-all" onclick="resetAllStudents()">🗑️ Reset Semua Siswa</button>
+        <button class="btn-action btn-logout" onclick="logoutAdmin()">🔒 Kunci Panel</button>
+      </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Siswa Terdaftar</div>
+        <div class="stat-val" id="stat-total-students">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Rata-Rata Total Skor</div>
+        <div class="stat-val" id="stat-avg-score">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Rata-Rata Endless Mode</div>
+        <div class="stat-val" id="stat-avg-endless">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Ujian Quest Selesai</div>
+        <div class="stat-val" id="stat-total-quests">-</div>
+      </div>
+    </section>
+
+    <!-- Table Section -->
+    <section class="card-table">
+      <div class="table-toolbar">
+        <div>
+          <h2 style="font-size: 18px; font-weight: 800;">Daftar Siswa & Rincian Nilai</h2>
+          <p style="font-size: 13px; color: var(--text-muted);">Data real-time dari database SQLite / Cloud</p>
+        </div>
+        <input type="text" id="searchInput" class="search-input" placeholder="Cari nama atau username siswa..." oninput="filterTable()" />
+      </div>
+
+      <div class="table-wrap">
+        <table id="studentsTable">
+          <thead>
+            <tr>
+              <th style="width: 45px;">No</th>
+              <th>Nama Siswa & Username</th>
+              <th>Bab 1</th>
+              <th>Bab 2</th>
+              <th>Bab 3</th>
+              <th>Bab 4</th>
+              <th>Bab 5</th>
+              <th>Bab 6</th>
+              <th>Bab 7</th>
+              <th>Endless Mode</th>
+              <th>Total Skor</th>
+              <th style="width: 80px; text-align: center;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="12" class="empty-state">Memuat data siswa dari server...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'detektif_admin_secret_key';
+    let allStudents = [];
+
+    function getAdminKey() {
+      return sessionStorage.getItem(STORAGE_KEY) || '';
+    }
+
+    function showLoginModal(errorMsg = '') {
+      const modal = document.getElementById('loginModal');
+      const errBox = document.getElementById('loginError');
+      if (errorMsg) {
+        errBox.textContent = errorMsg;
+        errBox.style.display = 'block';
+      } else {
+        errBox.style.display = 'none';
+      }
+      modal.classList.add('active');
+      setTimeout(() => {
+        document.getElementById('adminPasswordInput')?.focus();
+      }, 100);
+    }
+
+    function hideLoginModal() {
+      document.getElementById('loginModal').classList.remove('active');
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const input = document.getElementById('adminPasswordInput');
+      const pass = input.value.trim();
+      const errBox = document.getElementById('loginError');
+
+      if (!pass) return;
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pass }),
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          sessionStorage.setItem(STORAGE_KEY, pass);
+          hideLoginModal();
+          input.value = '';
+          errBox.style.display = 'none';
+          loadAllData();
+        } else {
+          errBox.textContent = data.message || 'Password admin salah!';
+          errBox.style.display = 'block';
+          input.select();
+        }
+      } catch (err) {
+        errBox.textContent = 'Gagal menghubungi server backend!';
+        errBox.style.display = 'block';
+      }
+    }
+
+    function logoutAdmin() {
+      sessionStorage.removeItem(STORAGE_KEY);
+      showLoginModal('Panel berhasil dikunci.');
+    }
+
+    async function loadAllData() {
+      const key = getAdminKey();
+      if (!key) {
+        showLoginModal();
+        return;
+      }
+
+      try {
+        // Load overview
+        const resOverview = await fetch('/api/admin/overview', {
+          headers: { 'x-admin-key': key },
+        });
+
+        if (resOverview.status === 401) {
+          sessionStorage.removeItem(STORAGE_KEY);
+          showLoginModal('Sesi berakhir atau password salah.');
+          return;
+        }
+
+        const dataOverview = await resOverview.json();
+        if (dataOverview.success && dataOverview.data) {
+          const d = dataOverview.data;
+          document.getElementById('stat-total-students').textContent = d.totalStudents;
+          document.getElementById('stat-avg-score').textContent = d.averageScore.toLocaleString() + ' PTS';
+          document.getElementById('stat-avg-endless').textContent = d.averageEndless.toLocaleString();
+          document.getElementById('stat-total-quests').textContent = d.totalQuestExamsTaken;
+        }
+
+        // Load students
+        const resStudents = await fetch('/api/admin/students', {
+          headers: { 'x-admin-key': key },
+        });
+
+        if (resStudents.status === 401) {
+          sessionStorage.removeItem(STORAGE_KEY);
+          showLoginModal('Sesi berakhir atau password salah.');
+          return;
+        }
+
+        const dataStudents = await resStudents.json();
+        if (dataStudents.success && Array.isArray(dataStudents.data)) {
+          allStudents = dataStudents.data;
+          renderTable(allStudents);
+        }
+      } catch (err) {
+        console.error('Error fetching admin data:', err);
+      }
+    }
+
+    function downloadCsv() {
+      const key = getAdminKey();
+      if (!key) {
+        showLoginModal('Silakan masukkan password admin terlebih dahulu.');
+        return;
+      }
+      window.open(`/api/admin/export-csv?key=${encodeURIComponent(key)}`, '_blank');
+    }
+
+    function renderTable(students) {
+      const tbody = document.getElementById('tableBody');
+      if (!students || students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="12" class="empty-state">Belum ada siswa yang mendaftar di game.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = students.map((s, idx) => {
+        const renderSubbab = (subId) => {
+          const ch = s.chaptersProgress[subId];
+          if (!ch) return '<span class="badge-quest empty">-</span>';
+
+          const stageLabel = ch.isStage21Completed
+            ? '<span class="badge-stage" style="background:#DEF7EC;color:#03543F;border-color:#31C48D;">ST 21 Selesai</span>'
+            : `<span class="badge-stage">ST ${ch.currentStage} (${ch.starsCount}★)</span>`;
+
+          const questBadge = ch.questScore !== null
+            ? `<span class="badge-quest scored">🎯 Ujian: ${ch.questScore}</span>`
+            : '<span class="badge-quest empty">Belum Ujian</span>';
+
+          return `<div class="subbab-cell">${stageLabel}${questBadge}</div>`;
+        };
+
+        return `
+          <tr>
+            <td style="font-weight:700; color:var(--text-muted);">${idx + 1}</td>
+            <td>
+              <div class="user-pill">
+                <span class="name">${escapeHtml(s.name)}</span>
+                <span class="uname">@${escapeHtml(s.username)}</span>
+              </div>
+            </td>
+            <td>${renderSubbab(1)}</td>
+            <td>${renderSubbab(2)}</td>
+            <td>${renderSubbab(3)}</td>
+            <td>${renderSubbab(4)}</td>
+            <td>${renderSubbab(5)}</td>
+            <td>${renderSubbab(6)}</td>
+            <td>${renderSubbab(7)}</td>
+            <td><span class="badge-endless">${s.endlessHighScore.toLocaleString()}</span></td>
+            <td><span class="badge-score-total">${s.totalScore.toLocaleString()} PTS</span></td>
+            <td style="text-align: center;">
+              <button class="btn-del-row" onclick="deleteStudent('${s.id}', '${escapeHtml(s.name || s.username)}')">🗑️ Hapus</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function deleteStudent(id, name) {
+      if (!confirm(`Hapus data siswa "${name}"?\nSeluruh progress bab, stage, dan nilai ujiannya akan dihapus permanen dari database.`)) {
+        return;
+      }
+      const key = getAdminKey();
+      try {
+        const res = await fetch(`/api/admin/students/${id}`, {
+          method: 'DELETE',
+          headers: { 'x-admin-key': key }
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadAllData();
+        } else {
+          alert(data.error || 'Gagal menghapus siswa');
+        }
+      } catch (err) {
+        alert('Gagal menghubungi server backend!');
+      }
+    }
+
+    async function resetAllStudents() {
+      const confirmText = prompt('⚠️ PERHATIAN!\nSeluruh data siswa, skor, dan nilai ujian di database akan DIHAPUS PERMANEN (Clean Slate untuk mulai riset baru).\n\nKetik "RESET" untuk mengonfirmasi:');
+      if (confirmText !== 'RESET') {
+        if (confirmText !== null) alert('Reset dibatalkan (kata kunci tidak cocok).');
+        return;
+      }
+      const key = getAdminKey();
+      try {
+        const res = await fetch('/api/admin/reset-all', {
+          method: 'POST',
+          headers: { 'x-admin-key': key }
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('✅ Seluruh data siswa berhasil dibersihkan!');
+          loadAllData();
+        } else {
+          alert(data.error || 'Gagal mereset data');
+        }
+      } catch (err) {
+        alert('Gagal menghubungi server backend!');
+      }
+    }
+
+    function filterTable() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      if (!q) {
+        renderTable(allStudents);
+        return;
+      }
+      const filtered = allStudents.filter(s =>
+        (s.name && s.name.toLowerCase().includes(q)) ||
+        (s.username && s.username.toLowerCase().includes(q))
+      );
+      renderTable(filtered);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Check auth on load
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!getAdminKey()) {
+        showLoginModal();
+      } else {
+        loadAllData();
+      }
+    });
+  </script>
+</body>
+</html>
